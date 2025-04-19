@@ -105,13 +105,15 @@
       return (now.getDate() / daysInMonth) * 100;
     }
 
-    function getWeekProgress() {
-      const now = new Date();
-      const day = now.getDay(); // Sunday = 0
-      const hour = now.getHours();
-      const minute = now.getMinutes();
-      return ((day + hour / 24 + minute / 1440) / 7) * 100;
-    }
+function getWeekProgress() {
+  const now = new Date();
+  let day = now.getDay(); // Sunday = 0, Monday = 1, ..., Saturday = 6
+  day = (day === 0) ? 6 : day - 1; // Shift Sunday to the end
+  const hour = now.getHours();
+  const minute = now.getMinutes();
+  return ((day + hour / 24 + minute / 1440) / 7) * 100;
+}
+
 
     function getDayProgress() {
       const now = new Date();
