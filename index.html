@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dynamic Progress Bars</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: transparent;
+    }
+
+    .progress-bar-container {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .progress-group {
+      display: flex;
+      align-items: center;
+      margin: 8px 0;
+    }
+
+    .label {
+      width: 70px;
+      margin-right: 10px;
+      color: #333;
+    }
+    @media (prefers-color-scheme: dark) {
+    .label {
+      color: white;
+    }
+  }
+
+
+    .progress-bar {
+      flex-grow: 1;
+      height: 12px;
+      background-color: #FFE1F6;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-right: 10px;
+    }
+
+    .fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 6px;
+      transition: width 0.5s ease;
+    }
+
+    .percent {
+      width: 40px;
+      text-align: right;
+      color: #333;
+    }
+
+    @media (prefers-color-scheme: dark) {
+    .percent {
+      color: white;
+    }
+  }
+
+  </style>
+</head>
+<body>
+
+  <div class="progress-bar-container">
+    <div class="progress-group">
+      <div class="label">Year</div>
+      <div class="progress-bar"><div class="fill" style="background: #EA596E;"></div></div>
+      <div class="percent"></div>
+    </div>
+    <div class="progress-group">
+      <div class="label">Month</div>
+      <div class="progress-bar"><div class="fill" style="background: #EA596E;"></div></div>
+      <div class="percent"></div>
+    </div>
+    <div class="progress-group">
+      <div class="label">Week</div>
+      <div class="progress-bar"><div class="fill" style="background: #EA596E;"></div></div>
+      <div class="percent"></div>
+    </div>
+    <div class="progress-group">
+      <div class="label">Day</div>
+      <div class="progress-bar"><div class="fill" style="background: #EA596E;"></div></div>
+      <div class="percent"></div>
+    </div>
+  </div>
+
+  <script>
+    function getYearProgress() {
+      const now = new Date();
+      const start = new Date(now.getFullYear(), 0, 0);
+      const diff = now - start + ((start.getTimezoneOffset() - now.getTimezoneOffset()) * 60000);
+      const oneDay = 1000 * 60 * 60 * 24;
+      const dayOfYear = Math.floor(diff / oneDay);
+      const totalDays = (new Date(now.getFullYear(), 11, 31).getDate() === 31) ? 366 : 365;
+      return (dayOfYear / totalDays) * 100;
+    }
+
+    function getMonthProgress() {
+      const now = new Date();
+      const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+      return (now.getDate() / daysInMonth) * 100;
+    }
+
+    function getWeekProgress() {
+      const now = new Date();
+      const day = now.getDay(); // Sunday = 0
+      const hour = now.getHours();
+      const minute = now.getMinutes();
+      return ((day + hour / 24 + minute / 1440) / 7) * 100;
+    }
+
+    function getDayProgress() {
+      const now = new Date();
+      const seconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+      return (seconds / 86400) * 100;
+    }
+
+    const progressFunctions = [
+      getYearProgress,
+      getMonthProgress,
+      getWeekProgress,
+      getDayProgress
+    ];
+
+    document.querySelectorAll('.progress-group').forEach((group, i) => {
+      const percent = progressFunctions[i]().toFixed(0);
+      const fill = group.querySelector('.fill');
+      const label = group.querySelector('.percent');
+      fill.style.width = percent + '%';
+      label.textContent = percent + '%';
+    });
+  </script>
+
+</body>
+</html>
